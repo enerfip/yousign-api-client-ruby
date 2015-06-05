@@ -10,7 +10,7 @@ This client allows to use the Yousign Soap API through Ruby.
     * git clone https://github.com/rapha777/yousign-api-client-ruby
 + Cd into **yousign-api-client-ruby** and execute:  
     * gem build **Ys_api.gemspec**
-    * gem install **YsApi**
+    * gem install **yousign_api**
 
 ## Configuration
 You can edit the file **'~/config/config.ini'** in order to enter your settings.  
