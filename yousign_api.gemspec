@@ -1,12 +1,12 @@
 # coding: utf-8
 $:.push File.expand_path("../lib", __FILE__)
 
-require 'Ys_api/version'
+require 'yousign_api/version'
 
 
 Gem::Specification.new do |spec|
   spec.name          = "yousign_api"
-  spec.version       = YsApi::VERSION
+  spec.version       = YousignApi::VERSION
   spec.authors       = ["Raphael Faye"]
   spec.email         = ["fayeraphael@yahoo.fr"]
 
@@ -21,4 +21,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "savon", "~>2.11", '>= 2.11.0'
   spec.add_dependency "nokogiri"
   spec.add_dependency "rake"
+  spec.add_development_dependency "rspec"
 end

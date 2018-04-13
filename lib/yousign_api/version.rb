@@ -1,3 +1,3 @@
-module YsApi
+module YousignApi
   VERSION = "0.1.0"
 end
