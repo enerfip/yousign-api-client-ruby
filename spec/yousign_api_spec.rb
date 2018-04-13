@@ -2,9 +2,8 @@ require 'spec_helper'
 
 describe YousignApi do
   subject { YousignApi }
-  after do
-    reinitialize_config
-  end
+  before { reinitialize_config }
+  after  { reinitialize_config }
 
   it "has a version number" do
     expect(YousignApi::VERSION).not_to be nil
