@@ -3,11 +3,7 @@ require 'spec_helper'
 describe YousignApi do
   subject { YousignApi }
   after do
-    Object.class_eval do
-      remove_const "YousignApi"
-      load File.expand_path("../../lib/yousign_api/setup.rb", __FILE__)
-      load File.expand_path("../../lib/yousign_api.rb", __FILE__)
-    end
+    reinitialize_config
   end
 
   it "has a version number" do

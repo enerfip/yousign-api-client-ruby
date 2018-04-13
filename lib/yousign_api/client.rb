@@ -6,11 +6,15 @@ module YousignApi
   class Client
     attr_accessor :cliauth, :clisign, :cliarch
 
+    def config
+      YousignApi
+    end
+
     def endpoint
       {
         'demo' => 'https://apidemo.yousign.fr:8181/',
         'prod' => 'https://api.yousign.fr:8181/'
-      }.fetch(environment) { raise "The Yousign environment was set to #{environment}, but it should be either 'demo' or 'prod'" }
+      }.fetch(config.environment) { raise "The Yousign environment was set to #{config.environment}, but it should be either 'demo' or 'prod'" }
     end
 
     def urlauth
@@ -29,25 +33,25 @@ module YousignApi
       {
         'demo' => 'https://demo.yousign.fr/',
         'prod' => 'https://api.yousign.fr/'
-      }.fetch(environment) { raise "The Yousign environment was set to '#{environment}', but it should be either 'demo' or 'prod'" }
+      }.fetch(config.environment) { raise "The Yousign environment was set to '#{config.environment}', but it should be either 'demo' or 'prod'" }
     end
 
     def headers
-      {:username => username,
-      :password => password,
-      :apikey => apikey}
+      {:username => config.username,
+       :password => password,
+       :apikey => config.apikey}
     end
 
     def clientauth
-      @clientauth ||= Savon.client(:wsdl => self.urlauth,:soap_header => @headers,:ssl_verify_mode => :none)
+      @clientauth ||= Savon.client(:wsdl => urlauth,:soap_header => @headers,:ssl_verify_mode => :none)
     end
 
     def clientsign
-      @clientsign ||= Savon.client(:wsdl => self.urlsign,:soap_header => @headers,:ssl_verify_mode => :none)
+      @clientsign ||= Savon.client(:wsdl => urlsign,:soap_header => @headers,:ssl_verify_mode => :none)
     end
 
     def clientarch
-      @clientarch ||= Savon.client(:wsdl => self.urlarch,:soap_header => @headers,:ssl_verify_mode => :none)
+      @clientarch ||= Savon.client(:wsdl => urlarch,:soap_header => @headers,:ssl_verify_mode => :none)
     end
 
     def self.hashpassword(passw)
@@ -55,11 +59,11 @@ module YousignApi
     end
 
     def password
-      @password ||= encrypt_password ? Client::hash_password(super) : super
+      @password ||= config.encrypt_password ? Client::hashpassword(config.password) : config.password
     end
 
     def initialize
-      raise "Yousign was not configured, please use `Yousign.setup` before using Yousign API client" unless configured?
+      raise "Yousign was not configured, please use `Yousign.setup` before using Yousign API client" unless config.configured?
     end
 
     def connection
@@ -118,22 +122,22 @@ module YousignApi
     end
 
     def signature_alert(idDemand, mailSubject='', mail='', language='')
-      @clientsign.call(:alert_cosigners, message:{idDemand:idDemand,
+      clientsign.call(:alert_cosigners, message:{idDemand:idDemand,
                                                   mailSubject:mailSubject,
                                                   mail:mail,
                                                   language:language})
     end
 
     def archive(file)
-      @clientarch.call(:archive, message:{file:file})
+      clientarch.call(:archive, message:{file:file})
     end
 
     def get_archive(iua)
-      @clientarch.call(:get_archive, message:{iua:iua})
+      clientarch.call(:get_archive, message:{iua:iua})
     end
 
     def get_complete_archive(iua)
-      @clientarch.call(:get_complete_archive, message:{iua:iua})
+      clientarch.call(:get_complete_archive, message:{iua:iua})
     end
   end
 end
