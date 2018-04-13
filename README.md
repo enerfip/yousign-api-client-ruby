@@ -7,37 +7,33 @@ This client allows to use the Yousign Soap API through Ruby.
 ## Install
 
 + Clone this repository:  
-    * git clone https://github.com/rapha777/yousign-api-client-ruby
+    * git clone https://github.com/enerfip/yousign-api-client-ruby
 + Cd into **yousign-api-client-ruby** and execute:  
-    * gem build **Ys_api.gemspec**
+    * gem build **yousign_api.gemspec**
     * gem install **yousign_api**
++ Or if you're using Bundler, add it to your Gemfile:
+
+`gem "yousign_api", git: "https://github.com/enerfip/yousign-api-client-ruby.git"`
 
 ## Configuration
-You can edit the file **'~/config/config.ini'** in order to enter your settings.  
-Then set your configuration with these parameters:
+Add this somewhere in your project code (in a Rails app for example: `app/initialisers/yousign.rb`)
 
-    * login : Your login (email address)
-    * password : Your password
-    * apikey : Your API Key 
-    * environment : demo or prod
-    * isEncryptedPassword : true if you use an encrypted password, false if not.    
+```ruby
+YousignApi.setup do |config|
+  config.username = "my_username"
+  config.password = "my_password"
+  config.apikey = "my_apikey"
+  config.environment = "prod" # Optional, defaults to "demo"
+  config.encrypt_password = true # Optional, defaults to `false`
+end
+```
 
 ## Examples
 You can find some examples about the way the client works in **~/examples**.  
 First, run the file **connection.rb** to verify your access.  
 Here, you can also set your user parameters in each ruby file.  
-First, comment the line **c = YsApi::Client.new(:conf => '/config/config.ini')**.   
-Then, uncomment these one and put your user information.  
 
-     * c = YsApi::Client.new(:username => username,
-                             :password => password,
-                             :apikey => apikey
-                             :environment => environment)
-     
-You need to hash your password. 
-Here is the hash calculation : sha1(sha1(clearPassword)+sha1(clearPassword)).  
-This calcul is done to secure your password.   
-If clearPassword = "test123", password ="6bc498d4dc47ec2177ff42151139da01c1660ddf". 
+     * client = YousignApi::Client.new
 
 For other examples, modify information in each of these Ruby files, then you can run these following programs.
   
