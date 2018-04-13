@@ -1,6 +1,7 @@
-module YsApi
-  require 'Ys_api/version'
-  require 'base64'
+require 'yousign_api/version'
+require 'base64'
+
+module YousignApi
 
   def self.files(name, visibleOptions)
     f= File.path(name)
