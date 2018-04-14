@@ -1,12 +1,7 @@
 module YousignApi
   module ConfigHelper
     def reinitialize_config
-      Object.class_eval do
-        remove_const "YousignApi"
-        load File.expand_path("../../../lib/yousign_api/setup.rb", __FILE__)
-        load File.expand_path("../../../lib/yousign_api.rb", __FILE__)
-        load File.expand_path("../../../lib/yousign_api/version.rb", __FILE__)
-      end
+      YousignApi.reinitialize_config
     end
 
     def configure_dummy_values

@@ -23,6 +23,8 @@ RSpec.describe YousignApi::Client do
 
       YousignApi.setup { |config| config.environment = "invalid_environment" }
       expect { described_class.new.endpoint }.to raise_error "The Yousign environment was set to invalid_environment, but it should be either 'demo' or 'prod'"
+      # teardown
+      YousignApi.setup { |config| config.environment = "demo" }
     end
   end
 

@@ -1,4 +1,5 @@
 require "spec_helper"
+require "yousign_api/payload"
 
 RSpec.describe YousignApi::Payload do
   class YousignApi::Payload::Dummy < YousignApi::Payload::Base
