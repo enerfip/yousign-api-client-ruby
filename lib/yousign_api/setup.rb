@@ -6,9 +6,13 @@ module YousignApi
         @@configured
       end
 
+      def reinitialize_config
+        @@configured = false
+      end
+
       def setup
-        yield self
         @@configured = true
+        yield self
       end
 
       def setup_defaults defaults

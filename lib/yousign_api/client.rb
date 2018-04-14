@@ -4,8 +4,6 @@ require 'digest/sha1'
 
 module YousignApi
   class Client
-    attr_accessor :cliauth, :clisign, :cliarch
-
     def config
       YousignApi
     end
@@ -14,7 +12,7 @@ module YousignApi
       {
         'demo' => 'https://apidemo.yousign.fr:8181/',
         'prod' => 'https://api.yousign.fr:8181/'
-      }.fetch(config.environment) { raise "The Yousign environment was set to #{config.environment}, but it should be either 'demo' or 'prod'" }
+      }.fetch(config.environment.to_s) { raise "The Yousign environment was set to #{config.environment}, but it should be either 'demo' or 'prod'" }
     end
 
     def urlauth
@@ -33,25 +31,25 @@ module YousignApi
       {
         'demo' => 'https://demo.yousign.fr/',
         'prod' => 'https://api.yousign.fr/'
-      }.fetch(config.environment) { raise "The Yousign environment was set to '#{config.environment}', but it should be either 'demo' or 'prod'" }
+      }.fetch(config.environment.to_s) { raise "The Yousign environment was set to '#{config.environment}', but it should be either 'demo' or 'prod'" }
     end
 
     def headers
-      {:username => config.username,
-       :password => password,
-       :apikey => config.apikey}
+      {username: config.username,
+       password: password,
+       apikey: config.apikey}
     end
 
     def clientauth
-      @clientauth ||= Savon.client(:wsdl => urlauth,:soap_header => @headers,:ssl_verify_mode => :none)
+      @clientauth ||= Savon.client(wsdl: urlauth, soap_header: headers, ssl_verify_mode: :none)
     end
 
     def clientsign
-      @clientsign ||= Savon.client(:wsdl => urlsign,:soap_header => @headers,:ssl_verify_mode => :none)
+      @clientsign ||= Savon.client(wsdl: urlsign, soap_header: headers, ssl_verify_mode: :none)
     end
 
     def clientarch
-      @clientarch ||= Savon.client(:wsdl => urlarch,:soap_header => @headers,:ssl_verify_mode => :none)
+      @clientarch ||= Savon.client(wsdl: urlarch, soap_header: headers, ssl_verify_mode: :none)
     end
 
     def self.hashpassword(passw)
@@ -66,33 +64,12 @@ module YousignApi
       raise "Yousign was not configured, please use `Yousign.setup` before using Yousign API client" unless config.configured?
     end
 
-    def connection
+    def connect
       clientauth.call(:connect)
     end
 
-    def signature_init (lstCosignedFile,
-                        lstCosignerInfos,
-                        message='',
-                        title='',
-                        initMailSubject=false,
-                        initMail=false,
-                        endMailSubject=false,
-                        endMail=false,
-                        language='FR',
-                        mode='IFRAME',
-                        archive=false)
-
-      clientsign.call(:init_cosign, message:{ lstCosignedFile:lstCosignedFile,
-                                              lstCosignerInfos:lstCosignerInfos,
-                                              title:title,
-                                              message:message,
-                                              initMailSubject:initMailSubject,
-                                              initMail:initMail,
-                                              endMailSubject:endMailSubject,
-                                              endMail:endMail,
-                                              language:language,
-                                              mode:mode,
-                                              archive:archive})
+    def signature_init(payload)
+      clientsign.call(:init_cosign, message: payload.to_payload)
     end
 
     def get_signed_files(idDemand, token='',idFile='')
@@ -106,13 +83,8 @@ module YousignApi
                                                                     token:token})
     end
 
-    def signature_list(search = '', firstResult ='', count = 1000, status ='', dateBegin='', dateEnd='')
-      clientsign.call(:get_list_cosign, message:{ search:search,
-                                                  firstResult:firstResult,
-                                                  count:count,
-                                                  status:status,
-                                                  dateBegin:dateBegin,
-                                                  dateEnd:dateEnd})
+    def signature_list(payload)
+      clientsign.call(:get_list_cosign, message: payload.to_payload)
     end
 
     def signature_cancel(idDemand, token='', idFile='')
