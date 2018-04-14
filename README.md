@@ -1,4 +1,7 @@
 # Ruby Client for Yousign API
+[![Maintainability](https://api.codeclimate.com/v1/badges/29f2460b83dbbfc934a6/maintainability)](https://codeclimate.com/github/enerfip/yousign-api-client-ruby/maintainability)
+[![Build Status](https://travis-ci.org/enerfip/yousign-api-client-ruby.svg?branch=master)](https://travis-ci.org/enerfip/yousign-api-client-ruby)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/29f2460b83dbbfc934a6/test_coverage)](https://codeclimate.com/github/enerfip/yousign-api-client-ruby/test_coverage)
 
 ## Description
 
