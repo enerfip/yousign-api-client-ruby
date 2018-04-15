@@ -36,11 +36,6 @@ RSpec.describe YousignApi::Client do
         config.apikey = "the_key"
       end
       expect(described_class.new.headers).to eq username: "acme", password: "some_password", apikey: "the_key"
-
-      YousignApi.setup do |config|
-        config.encrypt_password = true
-      end
-      expect(described_class.new.headers).to eq username: "acme", password: "8a0e3cf25e98c5a3eb03eb36d4b88ced9176cd2f", apikey: "the_key"
     end
   end
 end

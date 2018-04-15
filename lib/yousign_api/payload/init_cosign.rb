@@ -1,6 +1,6 @@
 module YousignApi
   module Payload
-    class SignatureInit < Base
+    class InitCosign < Base
       collection :lstCosignedFile,  type: "Document"
       collection :lstCosignerInfos, type: "Signer"
       attribute :title,           default: ""
