@@ -9,14 +9,14 @@ module YousignApi
         raise "Yousign was not configured, please use `Yousign.setup` before using Yousign API client" unless config.configured?
       end
 
-      def endpoint
+      def base_url
         {
           'demo' => 'https://apidemo.yousign.fr:8181/',
           'prod' => 'https://api.yousign.fr:8181/'
         }.fetch(config.environment.to_s) { raise "The Yousign environment was set to #{config.environment}, but it should be either 'demo' or 'prod'" }
       end
 
-      def urliframe
+      def iframe_url
         {
           'demo' => 'https://demo.yousign.fr/',
           'prod' => 'https://api.yousign.fr/'
@@ -29,14 +29,11 @@ module YousignApi
          apikey: config.apikey}
       end
 
-      def clientauth
-        @clientauth ||= Savon.client(wsdl: urlauth, soap_header: headers, ssl_verify_mode: :none)
-      end
-
-      def signature_init(payload)
-        clientsign.call(:init_cosign, message: payload.to_payload)
+      def endpoints
+        @endpoints ||= Hash.new do |h, url|
+          h[url] = Savon.client(wsdl: "#{base_url}#{url}", soap_header: headers, ssl_verify_mode: :none)
+        end
       end
     end
   end
 end
-

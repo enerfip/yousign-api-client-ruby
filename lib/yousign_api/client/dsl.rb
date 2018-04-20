@@ -1,13 +1,11 @@
+require "yousign_api/client/operations_builder"
+
 module YousignApi
   class Client
     module DSL
       module ClassMethods
-
-        def wsdl(enpoint_url)
-          yield self
-        end
-
-        def operation(operation_name, options = {})
+        def wsdl(url, &block)
+          YousignApi::Client::OperationsBuilder.new(self, url).build(block)
         end
       end
 
