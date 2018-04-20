@@ -1,7 +1,7 @@
 require "yousign_api/version"
 require "yousign_api/setup"
 require "yousign_api/payload"
-Dir[File.expand_path("payload/**/*.rb", __FILE__)].each { |f| require f }
+Dir[File.expand_path("../yousign_api/payload/**/*.rb", __FILE__)].each { |f| require f }
 require "yousign_api/client"
 
 module YousignApi

@@ -23,16 +23,11 @@ module YousignApi
             end
           else
             define_method(operation_name) do |payload_hash|
-              endpoints[local_endpoint_url].call(operation_name, objectify(payload_hash, operation_name))
+              endpoints[local_endpoint_url].call(operation_name, objectify(payload_hash, operation_name).to_payload)
             end
           end
         end
       end
-
-      def objectify(hsh, operation_name)
-        constantify(operation_name).new(hsh)
-      end
-
     end
   end
 end

@@ -19,7 +19,7 @@ module YousignApi
       end
 
       def self.define_writer(name, type)
-        unless type.blank?
+        unless type.nil?
           define_method("#{name}=") do |value|
             instance_variable_set("@#{name}", objectify(name, value, type))
           end
@@ -57,16 +57,8 @@ module YousignApi
 
       private
 
-      def validate_type(name, value, type)
-        return if type.blank?
-      end
-
-      def validate_types(name, value, type)
-        value.each { |v| validate_type(name, v, type) }
-      end
-
       def objectify(name, value, type)
-        return value if type.blank?
+        return value if type.nil?
         type_kls = Object.const_get("YousignApi::Payload::#{type}")
         type_kls.new(value)
       rescue StandardError => e

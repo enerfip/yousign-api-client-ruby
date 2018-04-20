@@ -34,6 +34,18 @@ module YousignApi
           h[url] = Savon.client(wsdl: "#{base_url}#{url}", soap_header: headers, ssl_verify_mode: :none)
         end
       end
+
+      def objectify(hsh, operation_name)
+        constantify(operation_name).new(hsh)
+      end
+
+      def constantify(sym)
+        Object.const_get("YousignApi::Payload::#{camelize(sym)}")
+      end
+
+      def camelize(str)
+        str.to_s.gsub(/(\A\w|_\w)/) { |m| m.upcase }.delete("_")
+      end
     end
   end
 end
