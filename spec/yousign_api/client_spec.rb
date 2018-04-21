@@ -1,46 +1,48 @@
 require "spec_helper"
 
 RSpec.describe YousignApi::Client do
-  describe "#new" do
-    it "raises an error when instanciating a client if gem is not configured" do
-      reinitialize_config
-      expect { described_class.new }.to raise_error "Yousign was not configured, please use `Yousign.setup` before using Yousign API client"
-    end
-    it "returns a new client otherwise" do
-      configure_dummy_values
-      expect(described_class.new).to be_kind_of described_class
-      reinitialize_config
+  before do
+    YousignApi.setup do |config|
+      config.username = "user"
+      config.password = "password"
+      config.apikey = "somapik"
+      config.environment = "demo"
     end
   end
 
-  describe "#endpoint" do
-    it "depends on environment" do
-      YousignApi.setup { |config| config.environment = "demo" }
-      expect(described_class.new.endpoint).to eq "https://apidemo.yousign.fr:8181/"
-
-      YousignApi.setup { |config| config.environment = "prod" }
-      expect(described_class.new.endpoint).to eq "https://api.yousign.fr:8181/"
-
-      YousignApi.setup { |config| config.environment = "invalid_environment" }
-      expect { described_class.new.endpoint }.to raise_error "The Yousign environment was set to invalid_environment, but it should be either 'demo' or 'prod'"
-      # teardown
-      YousignApi.setup { |config| config.environment = "demo" }
+  describe "#connect" do
+    it "sends a connect command to the correct endpoint" do
+      expect_request(
+        wsdl: "AuthenticationWS/AuthenticationWS?wsdl",
+        method: :connect,
+        args: no_args
+      )
+      described_class.new.connect
     end
   end
 
-  describe "#headers" do
-    it "depends on config" do
-      YousignApi.setup do |config|
-        config.username = "acme"
-        config.password = "some_password"
-        config.apikey = "the_key"
-      end
-      expect(described_class.new.headers).to eq username: "acme", password: "some_password", apikey: "the_key"
+  describe "#get_complete_archive" do
+    it "sends a get_complete_archive to the correct endpoint" do
+      expect_request(
+        wsdl: "ArchiveWS/ArchiveWS?wsdl",
+        method: :get_complete_archive,
+        args: { iua: 1 }
+      )
+      described_class.new.get_complete_archive(iua: 1)
+    end
+  end
 
-      YousignApi.setup do |config|
-        config.encrypt_password = true
-      end
-      expect(described_class.new.headers).to eq username: "acme", password: "8a0e3cf25e98c5a3eb03eb36d4b88ced9176cd2f", apikey: "the_key"
+  def expect_request(wsdl:, method:, args:)
+    connect_double = double(call: true)
+    expect(Savon).to receive(:client).with(
+      wsdl: "https://apidemo.yousign.fr:8181/#{wsdl}",
+      soap_header: {username: "user", password: "password", apikey: "somapik"},
+      ssl_verify_mode: :none
+    ).and_return connect_double
+    if args == no_args
+      expect(connect_double).to receive(:call).with(method)
+    else
+      expect(connect_double).to receive(:call).with(method, args)
     end
   end
 end

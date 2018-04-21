@@ -19,10 +19,9 @@ module YousignApi
       end
 
       def self.define_writer(name, type)
-        unless type.blank?
+        unless type.nil?
           define_method("#{name}=") do |value|
-            validate_type(name, value, type)
-            instance_variable_set("@#{name}", value)
+            instance_variable_set("@#{name}", objectify(name, value, type))
           end
         else
           attr_writer name
@@ -31,8 +30,7 @@ module YousignApi
 
       def self.define_collection_writer(name, type)
         define_method("#{name}=") do |value|
-          validate_types(name, value, type)
-          instance_variable_set("@#{name}", value)
+          instance_variable_set("@#{name}", objectify_collection(name, value, type))
         end
       end
 
@@ -50,6 +48,7 @@ module YousignApi
       end
 
       def initialize(hsh)
+        raise "Payload object needs a hash" unless hsh.respond_to?(:key?) && hsh.respond_to?(:[])
         self.class.attributes.each do |attr|
           raise "Missing required attribute '#{attr}' for '#{self.class}'" if !hsh.key?(attr) && public_send(attr).nil?
           public_send("#{attr}=", hsh[attr])
@@ -58,15 +57,17 @@ module YousignApi
 
       private
 
-      def validate_type(name, value, type)
-        return if type.blank?
-        required_kls = Object.const_get("YousignApi::Payload::#{type}")
-        raise "Only '#{required_kls}' instances are accepted for '#{name}'" unless value.kind_of? required_kls
+      def objectify(name, value, type)
+        return value if type.nil?
+        type_kls = Object.const_get("YousignApi::Payload::#{type}")
+        type_kls.new(value)
+      rescue StandardError => e
+        raise $!, "Field #{name}: #{$!}", $!.backtrace
       end
 
-      def validate_types(name, value, type)
+      def objectify_collection(name, value, type)
         raise "'#{name}' only accepts array" unless value.kind_of? Array
-        value.each { |v| validate_type(name, v, type) }
+        value.map { |v| objectify(name, v, type) }
       end
 
       def payloadify(value)

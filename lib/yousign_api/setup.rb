@@ -19,8 +19,10 @@ module YousignApi
         defaults.each do |key, value|
           class_variable_set("@@#{key}", value)
           class_eval(<<-EOS, __FILE__, __LINE__ + 1)
-            def self.#{key}
-              @@#{key}
+            if !respond_to?("#{key}")
+              def self.#{key}
+                @@#{key}
+              end
             end
 
             def self.#{key}=(new_val)
@@ -28,6 +30,15 @@ module YousignApi
             end
           EOS
         end
+        class_eval(<<-EOS, __FILE__, __LINE__ + 1)
+          def self.password
+            if encrypt_password
+              Digest::SHA1.hexdigest(Digest::SHA1.hexdigest(@@password)+Digest::SHA1.hexdigest(@@password))
+            else
+              @@password
+            end
+          end
+        EOS
       end
     end
 

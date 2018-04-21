@@ -20,9 +20,9 @@ RSpec.describe YousignApi::Payload do
 
   def valid_params
     {
-      item: valid_subdummy,
+      item: {name: "alex"},
       id: 1,
-      subitems: [valid_subdummy, valid_subdummy],
+      subitems: [{name: "alan"}, {name: "jane"}],
       other_collection: ["a", 1]
     }
   end
@@ -45,7 +45,7 @@ RSpec.describe YousignApi::Payload do
     it "raise errors if field is of wrong type" do
       expect {
         YousignApi::Payload::Dummy.new(valid_params.merge(item: "invalid"))
-      }.to raise_error "Only 'YousignApi::Payload::SubDummy' instances are accepted for 'item'"
+      }.to raise_error "Field item: Payload object needs a hash"
     end
 
     it "raise errors if collection is not an array" do
@@ -54,10 +54,10 @@ RSpec.describe YousignApi::Payload do
       }.to raise_error "'other_collection' only accepts array"
     end
 
-    it "raise errors if collection is of wrong type" do
+    it "raise errors if collection of complex types are not collection of hashes" do
       expect {
         YousignApi::Payload::Dummy.new(valid_params.merge(subitems: ["a"]))
-      }.to raise_error  "Only 'YousignApi::Payload::SubDummy' instances are accepted for 'subitems'"
+      }.to raise_error "Field subitems: Payload object needs a hash"
     end
 
     it "has default values" do
@@ -70,7 +70,7 @@ RSpec.describe YousignApi::Payload do
       expect(valid_dummy.to_payload).to eq item: {name: "alex"},
                                            id: 1,
                                            name: "def",
-                                           subitems: [{name: "alex"}, {name: "alex"}],
+                                           subitems: [{name: "alan"}, {name: "jane"}],
                                            other_collection: ["a", 1]
       expect(
         YousignApi::Payload::SubDummy.new(name: "special").to_payload
