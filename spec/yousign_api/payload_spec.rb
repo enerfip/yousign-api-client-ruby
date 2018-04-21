@@ -51,7 +51,7 @@ RSpec.describe YousignApi::Payload do
     it "raise errors if collection is not an array" do
       expect {
         YousignApi::Payload::Dummy.new(valid_params.merge(other_collection: "invalid"))
-      }.to raise_error "'other_collection' only accepts array"
+      }.to raise_error "'other_collection' only accepts array. \"invalid\" given instead"
     end
 
     it "raise errors if collection of complex types are not collection of hashes" do

@@ -13,9 +13,9 @@ module YousignApi
         content = Base64.encode64(test_file)
         afile.close
         {
-          name: name,
+          name: File.basename(name),
           content: content,
-          visibleOptions: visibleOptions.to_payload
+          visibleOptions: options.map(&:to_payload)
         }
       end
     end

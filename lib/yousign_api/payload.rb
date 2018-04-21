@@ -66,7 +66,7 @@ module YousignApi
       end
 
       def objectify_collection(name, value, type)
-        raise "'#{name}' only accepts array" unless value.kind_of? Array
+        raise "'#{name}' only accepts array. #{value.inspect} given instead" unless value.kind_of? Array
         value.map { |v| objectify(name, v, type) }
       end
 
