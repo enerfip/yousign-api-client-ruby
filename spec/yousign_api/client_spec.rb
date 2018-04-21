@@ -32,6 +32,63 @@ RSpec.describe YousignApi::Client do
     end
   end
 
+  describe "init_cosign" do
+    it "inits a cosign" do
+      expect_request(
+        wsdl: "CosignWS/CosignWS?wsdl",
+        method: :init_cosign,
+        args: {
+          lstCosignedFile: [{
+            name: "fixture.txt",
+            content: "ZHVtbXkgY29udGVudAo=\n",
+            visibleOptions: [{
+              visibleSignaturePage: 1,
+              isVisibleSignature: "True",
+              visibleRectangleSignature: "0,39,99,0",
+              mail: ""
+            }]
+          }],
+          lstCosignerInfos: [{
+            firstName: "Alan",
+            lastName: "Parson",
+            phone: "01234",
+            mail: "test@example.com",
+            authenticationMode: "sms"
+          }],
+          title: "",
+          message: "",
+          initMailSubject: false,
+          initMail: false,
+          endMailSubject: false,
+          endMail: false,
+          language: "FR",
+          mode: "IFRAME",
+          archive: false
+        }
+      )
+
+      described_class.new.init_cosign({
+          lstCosignedFile: [{
+            name: File.expand_path("../../fixture.txt", __FILE__),
+            options: [{
+              visibleSignaturePage: 1,
+              isVisibleSignature: "True",
+              visibleRectangleSignature: "0,39,99,0",
+              mail: ""
+            }]
+          }],
+          lstCosignerInfos: [{
+            firstName: "Alan",
+            lastName: "Parson",
+            phone: "01234",
+            mail: "test@example.com",
+            authenticationMode: "sms"
+          }]
+        }
+      )
+    end
+  end
+
   def expect_request(wsdl:, method:, args:)
     connect_double = double(call: true)
     expect(Savon).to receive(:client).with(
