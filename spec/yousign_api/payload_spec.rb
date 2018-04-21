@@ -27,10 +27,6 @@ RSpec.describe YousignApi::Payload do
     }
   end
 
-  def valid_subdummy
-    YousignApi::Payload::SubDummy.new name: "alex"
-  end
-
   describe "#new" do
     it "is instanciable with valid values" do
       expect(valid_dummy).to be_kind_of(YousignApi::Payload::Dummy)

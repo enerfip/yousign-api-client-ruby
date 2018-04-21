@@ -10,17 +10,13 @@ module YousignApi
       end
 
       def base_url
-        {
-          'demo' => 'https://apidemo.yousign.fr:8181/',
-          'prod' => 'https://api.yousign.fr:8181/'
-        }.fetch(config.environment.to_s) { raise "The Yousign environment was set to #{config.environment}, but it should be either 'demo' or 'prod'" }
+        environment_dependent 'demo' => 'https://apidemo.yousign.fr:8181/',
+                              'prod' => 'https://api.yousign.fr:8181/'
       end
 
       def iframe_url
-        {
-          'demo' => 'https://demo.yousign.fr/',
-          'prod' => 'https://api.yousign.fr/'
-        }.fetch(config.environment.to_s) { raise "The Yousign environment was set to '#{config.environment}', but it should be either 'demo' or 'prod'" }
+        environment_dependent 'demo' => 'https://demo.yousign.fr/',
+                              'prod' => 'https://api.yousign.fr/'
       end
 
       def headers
@@ -45,6 +41,10 @@ module YousignApi
 
       def camelize(str)
         str.to_s.gsub(/(\A\w|_\w)/) { |m| m.upcase }.delete("_")
+      end
+
+      def environment_dependent(hsh)
+        hsh.fetch(config.environment.to_s) { raise "The Yousign environment was set to #{config.environment}, but it should be either 'demo' or 'prod'" }
       end
     end
   end
