@@ -99,7 +99,7 @@ RSpec.describe YousignApi::Client do
     if args == no_args
       expect(connect_double).to receive(:call).with(method)
     else
-      expect(connect_double).to receive(:call).with(method, args)
+      expect(connect_double).to receive(:call).with(method, message: args)
     end
   end
 end
