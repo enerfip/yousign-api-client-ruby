@@ -14,9 +14,9 @@ module YousignApi
                               'prod' => 'https://api.yousign.fr:8181/'
       end
 
-      def iframe_url
-        environment_dependent 'demo' => 'https://demo.yousign.fr/',
-                              'prod' => 'https://api.yousign.fr/'
+      def iframe_url(token)
+        environment_dependent 'demo' => "https://demo.yousign.fr/public/ext/cosignature/#{token}",
+                              'prod' => "https://api.yousign.fr/public/ext/cosignature/#{token}"
       end
 
       def headers

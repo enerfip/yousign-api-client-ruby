@@ -17,15 +17,15 @@ RSpec.describe YousignApi::Client do
     it "depends on environment" do
       YousignApi.setup { |config| config.environment = "demo" }
       expect(described_class.new.base_url).to eq "https://apidemo.yousign.fr:8181/"
-      expect(described_class.new.iframe_url).to eq "https://demo.yousign.fr/"
+      expect(described_class.new.iframe_url("some_token")).to eq "https://demo.yousign.fr/public/ext/cosignature/some_token"
 
       YousignApi.setup { |config| config.environment = "prod" }
       expect(described_class.new.base_url).to eq "https://api.yousign.fr:8181/"
-      expect(described_class.new.iframe_url).to eq "https://api.yousign.fr/"
+      expect(described_class.new.iframe_url("some_token")).to eq "https://api.yousign.fr/public/ext/cosignature/some_token"
 
       YousignApi.setup { |config| config.environment = "invalid_environment" }
       expect { described_class.new.base_url }.to raise_error "The Yousign environment was set to invalid_environment, but it should be either 'demo' or 'prod'"
-      expect { described_class.new.iframe_url }.to raise_error "The Yousign environment was set to invalid_environment, but it should be either 'demo' or 'prod'"
+      expect { described_class.new.iframe_url("some_token") }.to raise_error "The Yousign environment was set to invalid_environment, but it should be either 'demo' or 'prod'"
       # teardown
       YousignApi.setup { |config| config.environment = "demo" }
     end
