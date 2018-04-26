@@ -18,6 +18,7 @@ module YousignApi
       operation :get_cosigned_files_from_demand
       operation :get_infos_from_cosignature_demand
       operation :get_list_cosign
+      operation :get_cosigned_files_from_demand
       operation :cancel_cosignature_demand
       operation :alert_cosigners
     end

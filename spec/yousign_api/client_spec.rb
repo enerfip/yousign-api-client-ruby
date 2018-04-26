@@ -32,6 +32,17 @@ RSpec.describe YousignApi::Client do
     end
   end
 
+  describe "#get_cosigned_files" do
+    it "sends a get_cosigned_files_from_demand to the correct endpoint" do
+      expect_request(
+        wsdl: "CosignWS/CosignWS?wsdl",
+        method: :get_cosigned_files_from_demand,
+        args: { idDemand: 1, token: "", idFile: "" }
+      )
+      described_class.new.get_cosigned_files_from_demand(idDemand: 1)
+    end
+  end
+
   describe "init_cosign" do
     it "inits a cosign" do
       expect_request(
