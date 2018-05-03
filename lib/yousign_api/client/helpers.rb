@@ -16,7 +16,7 @@ module YousignApi
 
       def iframe_url(token)
         environment_dependent 'demo' => "https://demo.yousign.fr/public/ext/cosignature/#{token}",
-                              'prod' => "https://api.yousign.fr/public/ext/cosignature/#{token}"
+                              'prod' => "https://yousign.fr/public/ext/cosignature/#{token}"
       end
 
       def headers

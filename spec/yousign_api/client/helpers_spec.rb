@@ -21,7 +21,7 @@ RSpec.describe YousignApi::Client do
 
       YousignApi.setup { |config| config.environment = "prod" }
       expect(described_class.new.base_url).to eq "https://api.yousign.fr:8181/"
-      expect(described_class.new.iframe_url("some_token")).to eq "https://api.yousign.fr/public/ext/cosignature/some_token"
+      expect(described_class.new.iframe_url("some_token")).to eq "https://yousign.fr/public/ext/cosignature/some_token"
 
       YousignApi.setup { |config| config.environment = "invalid_environment" }
       expect { described_class.new.base_url }.to raise_error "The Yousign environment was set to invalid_environment, but it should be either 'demo' or 'prod'"
